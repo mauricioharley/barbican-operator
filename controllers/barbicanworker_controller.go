@@ -43,10 +43,10 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
+	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	k8s_errors "k8s.io/apimachinery/pkg/api/errors"
 )
-
 
 // BarbicanWorkerReconciler reconciles a BarbicanWorker object
 type BarbicanWorkerReconciler struct {
@@ -68,8 +68,11 @@ func (r *BarbicanWorkerReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 	err := r.Client.Get(ctx, req.NamespacedName, instance)
 	if err != nil {
 		if k8s_errors.IsNotFound(err) {
-			return ctrl.Result{}, err
+			// Object not found
+			return ctrl.Result{}, nil
 		}
+		// Error reading the object - requeue the request.
+		return ctrl.Result{}, err
 	}
 	r.Log.Info(fmt.Sprintf("Reconciling BarbicanWorker %s", instance.Name))
 
@@ -477,7 +480,7 @@ func (r *BarbicanWorkerReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		For(&barbicanv1beta1.BarbicanWorker{}).
 		//Owns(&corev1.Service{}).
 		//Owns(&corev1.Secret{}).
-		//Owns(&appsv1.Deployment{}).
+		Owns(&appsv1.Deployment{}).
 		//Owns(&routev1.Route{}).
 		Complete(r)
 }

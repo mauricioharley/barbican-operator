@@ -90,8 +90,10 @@ func (r *BarbicanAPIReconciler) Reconcile(ctx context.Context, req ctrl.Request)
 	if err != nil {
 		if k8s_errors.IsNotFound(err) {
 			// Object not found
-			return ctrl.Result{}, err
+			return ctrl.Result{}, nil
 		}
+		// Error reading the object - requeue the request.
+		return ctrl.Result{}, err
 	}
 	r.Log.Info(fmt.Sprintf("Reconciling BarbicanAPI %s", instance.Name))
 
@@ -621,7 +623,6 @@ func (r *BarbicanAPIReconciler) reconcileNormal(ctx context.Context, instance *b
 func (r *BarbicanAPIReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&barbicanv1beta1.BarbicanAPI{}).
-		//Owns(&keystonev1.KeystoneEndpoint{}).
 		Owns(&corev1.Service{}).
 		Owns(&corev1.Secret{}).
 		Owns(&appsv1.Deployment{}).

@@ -26,10 +26,12 @@ import (
 	barbicanv1beta1 "github.com/openstack-k8s-operators/barbican-operator/api/v1beta1"
 	"github.com/openstack-k8s-operators/barbican-operator/pkg/barbican"
 	"github.com/openstack-k8s-operators/barbican-operator/pkg/barbicankeystonelistener"
+
 	//keystonev1 "github.com/openstack-k8s-operators/keystone-operator/api/v1beta1"
 	"github.com/openstack-k8s-operators/lib-common/modules/common"
 	"github.com/openstack-k8s-operators/lib-common/modules/common/condition"
 	"github.com/openstack-k8s-operators/lib-common/modules/common/deployment"
+
 	//"github.com/openstack-k8s-operators/lib-common/modules/common/endpoint"
 	"github.com/openstack-k8s-operators/lib-common/modules/common/env"
 	"github.com/openstack-k8s-operators/lib-common/modules/common/helper"
@@ -44,32 +46,10 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	//appsv1 "k8s.io/api/apps/v1"
+	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	k8s_errors "k8s.io/apimachinery/pkg/api/errors"
 )
-
-/*
-// GetClient -
-func (r *BarbicanAPIReconciler) GetClient() client.Client {
-	return r.Client
-}
-
-// GetKClient -
-func (r *BarbicanAPIReconciler) GetKClient() kubernetes.Interface {
-	return r.Kclient
-}
-
-// GetLogger -
-func (r *BarbicanAPIReconciler) GetLogger() logr.Logger {
-	return r.Log
-}
-
-// GetScheme -
-func (r *BarbicanAPIReconciler) GetScheme() *runtime.Scheme {
-	return r.Scheme
-}
-*/
 
 // BarbicanKeystoneListenerReconciler reconciles a BarbicanKeystoneListener object
 type BarbicanKeystoneListenerReconciler struct {
@@ -92,8 +72,10 @@ func (r *BarbicanKeystoneListenerReconciler) Reconcile(ctx context.Context, req 
 	if err != nil {
 		if k8s_errors.IsNotFound(err) {
 			// Object not found
-			return ctrl.Result{}, err
+			return ctrl.Result{}, nil
 		}
+		// Error reading the object - requeue the request.
+		return ctrl.Result{}, err
 	}
 	r.Log.Info(fmt.Sprintf("Reconciling BarbicanKeystoneListener %s", instance.Name))
 
@@ -637,10 +619,9 @@ func (r *BarbicanKeystoneListenerReconciler) reconcileNormal(ctx context.Context
 func (r *BarbicanKeystoneListenerReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&barbicanv1beta1.BarbicanKeystoneListener{}).
-		//Owns(&keystonev1.KeystoneEndpoint{}).
 		//Owns(&corev1.Service{}).
 		//Owns(&corev1.Secret{}).
-		//Owns(&appsv1.Deployment{}).
+		Owns(&appsv1.Deployment{}).
 		//Owns(&routev1.Route{}).
 		Complete(r)
 }

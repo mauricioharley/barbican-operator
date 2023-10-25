@@ -1,0 +1,28 @@
+{
+   "name": "",
+   "tests": 1,
+   "failures": 1,
+   "time": "194.243",
+   "testsuite": [
+     {
+       "tests": 1,
+       "failures": 1,
+       "timestamp": "2023-11-13T05:20:28.615535262-05:00",
+       "time": "184.027",
+       "name": "test/kuttl/tests/",
+       "testcase": [
+         {
+           "classname": "tests",
+           "name": "barbican_scale",
+           "timestamp": "2023-11-13T05:20:28.616712969-05:00",
+           "time": "184.025",
+           "assertions": 2,
+           "failure": {
+             "text": "deployments.apps \"barbican\" not found",
+             "message": "failed in step 0-deploy-barbican"
+           }
+         }
+       ]
+     }
+   ]
+ }
