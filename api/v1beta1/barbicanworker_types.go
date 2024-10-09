@@ -51,7 +51,7 @@ type BarbicanWorkerSpec struct {
         // +kubebuilder:validation:Optional
         // +kubebuilder:validation:MinItems=1
 	// +kubebuilder:validation:MaxItems=2
-        EnabledSecretStores []SecretStore `json:"enabledSecretStores"`
+        EnabledSecretStores []SecretStore `json:"enabledSecretStores,omitempty"`
 
         // +kubebuilder:validation:Optional
         // +kubebuilder:default="simple_crypto"

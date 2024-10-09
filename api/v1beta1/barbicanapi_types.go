@@ -58,9 +58,6 @@ type APIOverrideSpec struct {
 	Service map[service.Endpoint]service.RoutedOverrideSpec `json:"service,omitempty"`
 }
 
-// +kubebuilder:validation:Enum=simple_crypto;pkcs11
-type SecretStore string
-
 // BarbicanAPISpec defines the desired state of BarbicanAPI
 type BarbicanAPISpec struct {
 	BarbicanTemplate `json:",inline"`
